@@ -68,6 +68,7 @@ Project DBT thực hành hoàn chỉnh kết nối PostgreSQL, minh họa toàn 
 | `docs/docker_airflow_setup.md` | Hướng dẫn setup Airflow bằng Docker. |
 | `docs/asset_based_scheduling.md` | Hướng dẫn demo Asset-based scheduling. |
 | `docs/scd2_huong_dan.md` | Hướng dẫn SCD2 bằng tiếng Việt. |
+| `docs/snapshot_huong_dan.md` | Hướng dẫn snapshot trong DBT bằng tiếng Việt. |
 
 ### 7. Các phần còn lại trong project
 
@@ -76,6 +77,7 @@ Project DBT thực hành hoàn chỉnh kết nối PostgreSQL, minh họa toàn 
 | `tests/` | Các singular tests và unit tests cho macro, artifact, documentation. |
 | `dbt_project.yml` | Cấu hình chính của dbt project. |
 | `profiles.yml` | Mẫu cấu hình kết nối. |
+| `snapshots/` | Nơi chứa các snapshot definitions để lưu lịch sử thay đổi dữ liệu. |
 | `docker/` và `docker-compose.yml` | Cấu hình chạy môi trường Airflow/dbt bằng Docker. |
 | `analyses/` | Nơi để các truy vấn phân tích ad-hoc. |
 | `target/` | Thư mục artifacts sinh ra sau khi dbt chạy. |

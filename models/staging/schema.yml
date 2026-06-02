@@ -161,3 +161,27 @@ models:
         description: "Thời điểm version này bắt đầu có hiệu lực"
         tests:
           - not_null
+
+  - name: stg_customer_snapshot_source
+    description: "Staging model cho dữ liệu current-state dùng để demo snapshot"
+    columns:
+      - name: customer_id
+        description: "Business key — mã định danh khách hàng"
+        tests:
+          - not_null
+      - name: full_name
+        description: "Họ và tên đầy đủ của khách hàng"
+        tests:
+          - not_null
+      - name: email
+        description: "Địa chỉ email của khách hàng"
+        tests:
+          - not_null
+      - name: status
+        description: "Trạng thái tài khoản: active hoặc inactive"
+        tests:
+          - not_null
+      - name: updated_at
+        description: "Thời điểm ghi nhận bản ghi hiện tại"
+        tests:
+          - not_null

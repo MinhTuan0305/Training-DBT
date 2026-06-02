@@ -80,3 +80,21 @@ seeds:
         description: "Trạng thái tài khoản: active hoặc inactive"
       - name: updated_at
         description: "Thời điểm version này bắt đầu có hiệu lực"
+
+  - name: raw_customer_snapshot
+    description: "Bảng demo current-state để thực hành dbt snapshot"
+    config:
+      column_types:
+        customer_id: integer
+        updated_at: timestamp
+    columns:
+      - name: customer_id
+        description: "Business key — mã định danh khách hàng"
+      - name: full_name
+        description: "Họ và tên đầy đủ của khách hàng"
+      - name: email
+        description: "Địa chỉ email của khách hàng"
+      - name: status
+        description: "Trạng thái tài khoản: active hoặc inactive"
+      - name: updated_at
+        description: "Thời điểm ghi nhận bản ghi hiện tại"

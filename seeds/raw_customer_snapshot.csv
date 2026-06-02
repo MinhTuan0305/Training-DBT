@@ -1,0 +1,4 @@
+customer_id,full_name,email,status,updated_at
+1,Nguyen An,an.nguyen@gmail.com,active,2026-06-01 16:12:00
+2,Tran Binh,binh.tran@example.com,active,2026-05-01 09:00:00
+3,Le Chi,chi.le@example.com,inactive,2026-05-01 09:00:00
