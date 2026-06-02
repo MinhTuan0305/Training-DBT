@@ -1,0 +1,43 @@
+version: 2
+
+macros:
+  - name: cents_to_dollars
+    description: >
+      Converts a monetary value from cents (integer) to dollars (decimal).
+      Handles NULL input gracefully — returns NULL if input is NULL.
+      Used in staging models to normalize monetary columns.
+    arguments:
+      - name: column_name
+        type: string
+        description: "The column or expression containing the value in cents"
+      - name: precision
+        type: integer
+        description: "Number of decimal places to round to (default: 2)"
+
+  - name: generate_schema_name
+    description: >
+      Overrides DBT's default schema naming behavior.
+      If a custom schema name is provided (via +schema config), use it directly (trimmed).
+      If no custom schema name is provided, fall back to target.schema.
+      This prevents DBT from concatenating target.schema + custom_schema (default behavior).
+    arguments:
+      - name: custom_schema_name
+        type: string
+        description: "The custom schema name from +schema config, or none"
+      - name: node
+        type: object
+        description: "The DBT node object (required by DBT macro signature)"
+
+  - name: limit_data_in_dev
+    description: >
+      Limits data volume in development environment by adding a WHERE clause
+      that filters rows to only the most recent N days.
+      In non-dev environments (prod, staging, ci), returns an empty string.
+      Use this macro to speed up dbt run in development.
+    arguments:
+      - name: column_name
+        type: string
+        description: "The date/timestamp column to filter on"
+      - name: dev_limit
+        type: integer
+        description: "Number of days to look back in dev environment (default: 100)"

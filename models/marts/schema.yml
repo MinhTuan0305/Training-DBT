@@ -1,0 +1,103 @@
+version: 2
+
+models:
+  - name: fct_orders
+    description: "Fact table tổng hợp đơn hàng — JOIN giữa stg_orders và stg_customers"
+    columns:
+      - name: order_id
+        description: "Primary key — mã định danh duy nhất của đơn hàng"
+        tests:
+          - not_null
+          - unique
+      - name: customer_id
+        description: "Foreign key — tham chiếu đến dim_customers.customer_id"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_customers')
+              field: customer_id
+      - name: full_name
+        description: "Họ và tên đầy đủ của khách hàng"
+      - name: amount_dollars
+        description: "Giá trị đơn hàng tính bằng dollars"
+        tests:
+          - not_null
+      - name: status
+        description: "Trạng thái đơn hàng: pending, completed, hoặc cancelled"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['pending', 'completed', 'cancelled']
+      - name: ordered_at
+        description: "Thời điểm đặt hàng"
+        tests:
+          - not_null
+
+  - name: dim_customers
+    description: "Dimension table khách hàng với aggregated metrics từ orders"
+    columns:
+      - name: customer_id
+        description: "Primary key — mã định danh duy nhất của khách hàng"
+        tests:
+          - not_null
+          - unique
+      - name: full_name
+        description: "Họ và tên đầy đủ của khách hàng"
+        tests:
+          - not_null
+      - name: email
+        description: "Địa chỉ email của khách hàng"
+        tests:
+          - not_null
+      - name: status
+        description: "Trạng thái tài khoản: active hoặc inactive"
+      - name: total_orders
+        description: "Tổng số đơn hàng của khách hàng (0 nếu chưa có đơn)"
+        tests:
+          - not_null
+      - name: total_spent
+        description: "Tổng giá trị đã chi tiêu tính bằng dollars (0 nếu chưa có đơn)"
+        tests:
+          - not_null
+      - name: first_order_at
+        description: "Thời điểm đặt đơn hàng đầu tiên (NULL nếu chưa có đơn)"
+      - name: last_order_at
+        description: "Thời điểm đặt đơn hàng gần nhất (NULL nếu chưa có đơn)"
+
+  - name: dim_customer_profile_scd2
+    description: "Dimension SCD2 lưu lịch sử thay đổi hồ sơ khách hàng"
+    columns:
+      - name: customer_id
+        description: "Business key — mã định danh khách hàng"
+        tests:
+          - not_null
+      - name: full_name
+        description: "Họ và tên đầy đủ của khách hàng"
+        tests:
+          - not_null
+      - name: email
+        description: "Địa chỉ email của khách hàng"
+        tests:
+          - not_null
+      - name: status
+        description: "Trạng thái tài khoản: active hoặc inactive"
+        tests:
+          - not_null
+      - name: updated_at
+        description: "Thời điểm version này bắt đầu có hiệu lực"
+        tests:
+          - not_null
+      - name: scd2_change_hash
+        description: "Hash của các cột được theo dõi để phát hiện thay đổi"
+      - name: dbt_valid_from
+        description: "Thời điểm version bắt đầu hiệu lực"
+        tests:
+          - not_null
+      - name: dbt_valid_to
+        description: "Thời điểm version kết thúc hiệu lực"
+        tests:
+          - not_null
+      - name: is_current
+        description: "Cờ cho biết đây có phải version hiện tại hay không"
+        tests:
+          - not_null

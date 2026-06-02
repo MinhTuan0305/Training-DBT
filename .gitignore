@@ -1,0 +1,32 @@
+# DBT artifacts (generated automatically on each run)
+target/
+dbt_packages/
+
+# DBT credentials — never commit this file
+profiles.yml
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.hypothesis/
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+env/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo

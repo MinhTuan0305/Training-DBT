@@ -1,0 +1,82 @@
+version: 2
+
+seeds:
+  - name: raw_customers
+    description: "Bảng raw data khách hàng, được load từ file CSV"
+    config:
+      column_types:
+        customer_id: integer
+        created_at: timestamp
+    columns:
+      - name: customer_id
+        description: "Primary key — mã định danh duy nhất của khách hàng"
+      - name: first_name
+        description: "Tên của khách hàng"
+      - name: last_name
+        description: "Họ của khách hàng"
+      - name: email
+        description: "Địa chỉ email của khách hàng"
+      - name: created_at
+        description: "Thời điểm tạo tài khoản khách hàng"
+      - name: status
+        description: "Trạng thái tài khoản: active hoặc inactive"
+
+  - name: raw_orders
+    description: "Bảng raw data đơn hàng, được load từ file CSV"
+    config:
+      column_types:
+        order_id: integer
+        customer_id: integer
+        product_id: integer
+        amount_cents: integer
+        ordered_at: timestamp
+    columns:
+      - name: order_id
+        description: "Primary key — mã định danh duy nhất của đơn hàng"
+      - name: customer_id
+        description: "Foreign key — tham chiếu đến raw_customers.customer_id"
+      - name: product_id
+        description: "Foreign key — tham chiếu đến raw_products.product_id"
+      - name: amount_cents
+        description: "Giá trị đơn hàng tính bằng cents (luôn > 0)"
+      - name: status
+        description: "Trạng thái đơn hàng: pending, completed, hoặc cancelled"
+      - name: ordered_at
+        description: "Thời điểm đặt hàng"
+
+  - name: raw_products
+    description: "Bảng raw data sản phẩm, được load từ file CSV"
+    config:
+      column_types:
+        product_id: integer
+        price_cents: integer
+        is_active: boolean
+    columns:
+      - name: product_id
+        description: "Primary key — mã định danh duy nhất của sản phẩm"
+      - name: product_name
+        description: "Tên sản phẩm"
+      - name: category
+        description: "Danh mục sản phẩm (Electronics, Clothing, Footwear, ...)"
+      - name: price_cents
+        description: "Giá sản phẩm tính bằng cents"
+      - name: is_active
+        description: "Trạng thái sản phẩm: true nếu đang bán, false nếu ngừng bán"
+
+  - name: raw_customer_profile_history
+    description: "Bảng demo history để thực hành SCD2 cho hồ sơ khách hàng"
+    config:
+      column_types:
+        customer_id: integer
+        updated_at: timestamp
+    columns:
+      - name: customer_id
+        description: "Business key — mã định danh khách hàng"
+      - name: full_name
+        description: "Họ và tên đầy đủ của khách hàng"
+      - name: email
+        description: "Địa chỉ email của khách hàng"
+      - name: status
+        description: "Trạng thái tài khoản: active hoặc inactive"
+      - name: updated_at
+        description: "Thời điểm version này bắt đầu có hiệu lực"

@@ -1,0 +1,163 @@
+version: 2
+
+sources:
+  - name: raw
+    schema: dbt_dev
+    description: "Raw data được load vào PostgreSQL từ seeds (dbt seed)"
+    tables:
+      - name: raw_customers
+        description: "Bảng raw data khách hàng"
+        loaded_at_field: created_at
+        freshness:
+          warn_after: {count: 7, period: day}
+          error_after: {count: 30, period: day}
+        columns:
+          - name: customer_id
+            description: "Primary key — mã định danh duy nhất của khách hàng"
+            tests:
+              - not_null
+              - unique
+          - name: email
+            description: "Địa chỉ email của khách hàng"
+            tests:
+              - not_null
+          - name: status
+            description: "Trạng thái tài khoản: active hoặc inactive"
+
+      - name: raw_orders
+        description: "Bảng raw data đơn hàng"
+        loaded_at_field: ordered_at
+        freshness:
+          warn_after: {count: 1, period: day}
+          error_after: {count: 7, period: day}
+        columns:
+          - name: order_id
+            description: "Primary key — mã định danh duy nhất của đơn hàng"
+            tests:
+              - not_null
+              - unique
+          - name: customer_id
+            description: "Foreign key — tham chiếu đến raw_customers.customer_id"
+            tests:
+              - not_null
+          - name: amount_cents
+            description: "Giá trị đơn hàng tính bằng cents (luôn > 0)"
+            tests:
+              - not_null
+          - name: status
+            description: "Trạng thái đơn hàng: pending, completed, hoặc cancelled"
+
+      - name: raw_products
+        description: "Bảng raw data sản phẩm"
+        columns:
+          - name: product_id
+            description: "Primary key — mã định danh duy nhất của sản phẩm"
+            tests:
+              - not_null
+              - unique
+          - name: product_name
+            description: "Tên sản phẩm"
+          - name: is_active
+            description: "Trạng thái sản phẩm: true nếu đang bán"
+
+models:
+  - name: stg_customers
+    description: "Staging model cho khách hàng — làm sạch và chuẩn hóa dữ liệu từ raw_customers"
+    columns:
+      - name: customer_id
+        description: "Primary key — mã định danh duy nhất của khách hàng"
+        tests:
+          - not_null
+          - unique
+      - name: full_name
+        description: "Họ và tên đầy đủ (first_name || ' ' || last_name)"
+        tests:
+          - not_null
+      - name: email
+        description: "Địa chỉ email của khách hàng"
+        tests:
+          - not_null
+      - name: created_at
+        description: "Thời điểm tạo tài khoản (đã cast sang timestamp)"
+      - name: status
+        description: "Trạng thái tài khoản: active hoặc inactive"
+        tests:
+          - accepted_values:
+              values: ['active', 'inactive']
+
+  - name: stg_orders
+    description: "Staging model cho đơn hàng — làm sạch, chuẩn hóa và chuyển đổi amount_cents sang dollars"
+    columns:
+      - name: order_id
+        description: "Primary key — mã định danh duy nhất của đơn hàng"
+        tests:
+          - not_null
+          - unique
+      - name: customer_id
+        description: "Foreign key — tham chiếu đến stg_customers.customer_id"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_customers')
+              field: customer_id
+      - name: product_id
+        description: "Foreign key — tham chiếu đến stg_products.product_id"
+        tests:
+          - not_null
+      - name: amount_dollars
+        description: "Giá trị đơn hàng tính bằng dollars (chuyển đổi từ amount_cents)"
+        tests:
+          - not_null
+      - name: status
+        description: "Trạng thái đơn hàng: pending, completed, hoặc cancelled"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['pending', 'completed', 'cancelled']
+      - name: ordered_at
+        description: "Thời điểm đặt hàng (đã cast sang timestamp)"
+
+  - name: stg_products
+    description: "Staging model cho sản phẩm — lọc sản phẩm active và chuyển đổi price_cents sang dollars"
+    columns:
+      - name: product_id
+        description: "Primary key — mã định danh duy nhất của sản phẩm"
+        tests:
+          - not_null
+          - unique
+      - name: product_name
+        description: "Tên sản phẩm"
+        tests:
+          - not_null
+      - name: category
+        description: "Danh mục sản phẩm"
+      - name: price_dollars
+        description: "Giá sản phẩm tính bằng dollars (chuyển đổi từ price_cents)"
+        tests:
+          - not_null
+      - name: is_active
+        description: "Trạng thái sản phẩm (luôn true vì đã filter trong model)"
+
+  - name: stg_customer_profile_history
+    description: "Staging model cho dữ liệu lịch sử khách hàng dùng để demo SCD2"
+    columns:
+      - name: customer_id
+        description: "Business key — mã định danh khách hàng"
+        tests:
+          - not_null
+      - name: full_name
+        description: "Họ và tên đầy đủ của khách hàng"
+        tests:
+          - not_null
+      - name: email
+        description: "Địa chỉ email của khách hàng"
+        tests:
+          - not_null
+      - name: status
+        description: "Trạng thái tài khoản: active hoặc inactive"
+        tests:
+          - not_null
+      - name: updated_at
+        description: "Thời điểm version này bắt đầu có hiệu lực"
+        tests:
+          - not_null
