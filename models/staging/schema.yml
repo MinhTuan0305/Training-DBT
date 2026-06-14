@@ -60,6 +60,24 @@ sources:
           - name: is_active
             description: "Trạng thái sản phẩm: true nếu đang bán"
 
+      - name: raw_products2
+        description: "Bảng raw data sản phẩm có thêm cột is_dollar để demo case chuyển đổi giá tùy theo loại tiền"
+        columns:
+          - name: product_id
+            description: "Primary key — mã định danh duy nhất của sản phẩm"
+            tests:
+              - not_null
+              - unique
+          - name: product_name
+            description: "Tên sản phẩm"
+          - name: is_active
+            description: "Trạng thái sản phẩm: true nếu đang bán"
+          - name: is_dollar
+            description: "Cờ chỉ định giá có phải là dollar không"
+            tests:
+              - not_null
+            
+
 models:
   - name: stg_customers
     description: "Staging model cho khách hàng — làm sạch và chuẩn hóa dữ liệu từ raw_customers"
@@ -185,3 +203,28 @@ models:
         description: "Thời điểm ghi nhận bản ghi hiện tại"
         tests:
           - not_null
+
+  - name: stg_product2
+    description: "Staging model cho sản phẩm — lọc sản phẩm active và chuyển đổi price sang dollars nếu is_dollar = true"
+    columns:
+      - name: product_id
+        description: "Primary key — mã định danh duy nhất của sản phẩm"
+        tests:
+          - not_null
+          - unique
+      - name: product_name
+        description: "Tên sản phẩm"
+        tests:
+          - not_null
+      - name: category
+        description: "Danh mục sản phẩm"
+      - name: price
+        description: "Giá sản phẩm (có thể là cents hoặc dollar tùy vào is_dollar)"
+        tests:
+          - not_null
+      - name: price_dollars
+        description: "Giá sản phẩm tính bằng dollars (chuyển đổi từ price nếu is_dollar = true, ngược lại giữ nguyên)"
+        tests:
+          - not_null
+      - name: is_active
+        description: "Trạng thái sản phẩm (luôn true vì đã filter trong model)"

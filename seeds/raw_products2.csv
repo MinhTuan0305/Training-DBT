@@ -1,0 +1,11 @@
+product_id,product_name,category,price,is_active,is_dollar
+1,iPhone 15 Pro,Electronics,999,true,true
+2,Samsung Galaxy S24,Electronics,89900,true,false
+3,Sony WH-1000XM5 Headphones,Electronics,349,true,true
+4,Levi's 501 Original Jeans,Clothing,6999,true,false
+5,Nike Air Max 270,Footwear,150,true,true
+6,Adidas Ultraboost 22,Footwear,18000,false,false
+7,The North Face Puffer Jacket,Clothing,220,true,true
+8,Apple MacBook Air M2,Electronics,129900,true,false
+9,Uniqlo Merino Wool Sweater,Clothing,49,true,true
+10,Kindle Paperwhite,Electronics,13999,false,false

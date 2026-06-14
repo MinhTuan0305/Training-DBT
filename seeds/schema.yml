@@ -98,3 +98,25 @@ seeds:
         description: "Trạng thái tài khoản: active hoặc inactive"
       - name: updated_at
         description: "Thời điểm ghi nhận bản ghi hiện tại"
+
+  - name: raw_products2
+    description: "Bảng raw data sản phẩm, được load từ file CSV"
+    config:
+      column_types:
+        product_id: integer
+        price: integer
+        is_active: boolean
+        is_dollar: boolean
+    columns:
+      - name: product_id
+        description: "Primary key — mã định danh duy nhất của sản phẩm"
+      - name: product_name
+        description: "Tên sản phẩm"
+      - name: category
+        description: "Danh mục sản phẩm (Electronics, Clothing, Footwear, ...)"
+      - name: price
+        description: "Giá sản phẩm (có thể là cents hoặc dollar tùy vào is_dollar)"
+      - name: is_active
+        description: "Trạng thái sản phẩm: true nếu đang bán, false nếu ngừng bán"
+      - name: is_dollar
+        description: "Kiểu giá: true nếu là giá USD, false nếu là giá khác"

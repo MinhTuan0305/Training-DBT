@@ -39,19 +39,36 @@ with DAG(
     catchup=False,
     tags=["learning", "dbt", "airflow"],
 ) as dag:
+    dag.doc_md = __doc__
+
     seed = BashOperator(
         task_id="dbt_seed",
         bash_command=f'dbt seed --project-dir "{DBT_PROJECT_DIR}" --profiles-dir "{DBT_PROFILES_DIR}"',
     )
+    seed.doc_md = """\
+### dbt seed
+
+Tải dữ liệu CSV từ `seeds/` vào database trước khi chạy model.
+"""
 
     run_models = BashOperator(
         task_id="dbt_run",
         bash_command=f'dbt run --project-dir "{DBT_PROJECT_DIR}" --profiles-dir "{DBT_PROFILES_DIR}"',
     )
+    run_models.doc_md = """\
+### dbt run
+
+Build toàn bộ model dbt trong project sau khi seed đã được nạp.
+"""
 
     test_models = BashOperator(
         task_id="dbt_test",
         bash_command=f'dbt test --project-dir "{DBT_PROJECT_DIR}" --profiles-dir "{DBT_PROFILES_DIR}"',
     )
+    test_models.doc_md = """\
+### dbt test
+
+Chạy toàn bộ tests để kiểm tra chất lượng dữ liệu và logic của model.
+"""
 
     seed >> run_models >> test_models

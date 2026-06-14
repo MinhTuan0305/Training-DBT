@@ -14,6 +14,7 @@ x-airflow-common: &airflow-common
   volumes:
     - ./dags:/opt/airflow/dags
     - ./:/opt/airflow/project
+    - ./data:/opt/airflow/data
   depends_on:
     airflow-db:
       condition: service_healthy
